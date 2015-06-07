@@ -1,0 +1,22 @@
+{
+  "name": "immutable-state",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasmreis/immutable-state.git"
+  },
+  "author": "Lucas Reis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasmreis/immutable-state/issues"
+  },
+  "homepage": "https://github.com/lucasmreis/immutable-state#readme",
+  "devDependencies": {
+    "babelify": "^6.1.2"
+  }
+}
