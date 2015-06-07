@@ -18,5 +18,8 @@
   "homepage": "https://github.com/lucasmreis/immutable-state#readme",
   "devDependencies": {
     "babelify": "^6.1.2"
+  },
+  "dependencies": {
+    "mori": "^0.3.2"
   }
 }
