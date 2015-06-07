@@ -2,7 +2,7 @@ import Mori from 'mori';
 
 import {prop} from './helpers';
 import {addFoo, addBar} from './command';
-import {currentState, update, listen} from './appState';
+import {currentState, update, listen, undo} from './appState';
 import {renderList} from './render';
 
 let {get} = Mori;
@@ -16,6 +16,7 @@ const initialState = currentState();
 renderList(foosElement)(get(initialState, 'foos'));
 renderList(barsElement)(get(initialState, 'bars'));
 
+// RENDER ON NEXT STATE
 listen(prop('foos'), renderList(foosElement));
 listen(prop('bars'), renderList(barsElement));
 
@@ -24,3 +25,4 @@ window.currentState = currentState;
 window.update = update;
 window.addFoo = addFoo;
 window.addBar = addBar;
+window.undo = undo;

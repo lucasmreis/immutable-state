@@ -449,6 +449,10 @@ var peek = _mori2['default'].peek;
 var each = _mori2['default'].each;
 var get = _mori2['default'].get;
 var toJs = _mori2['default'].toJs;
+var reverse = _mori2['default'].reverse;
+var rest = _mori2['default'].rest;
+var comp = _mori2['default'].comp;
+var count = _mori2['default'].count;
 
 var initialValue = hashMap('foos', set([1, 2, 3]), 'bars', set(['a', 'b', 'c']));
 
@@ -488,13 +492,25 @@ var update = function update(fn) {
   // calculate new state
   var newState = fn(peek(history));
 
-  // add new state to history
-  history = conj(history, newState);
+  if (!equals(previousState, newState)) {
+    // add new state to history
+    history = conj(history, newState);
 
-  // fire listener callbacks
-  each(listeners, callListener(previousState, newState));
+    // fire listener callbacks
+    each(listeners, callListener(previousState, newState));
+  }
 };
+
 exports.update = update;
+var undo = function undo() {
+  if (count(history) > 1) {
+    var previousState = peek(history);
+    history = comp(reverse, rest, reverse)(history);
+    var newState = peek(history);
+    each(listeners, callListener(previousState, newState));
+  }
+};
+exports.undo = undo;
 
 },{"mori":1}],3:[function(require,module,exports){
 'use strict';
@@ -580,6 +596,7 @@ var initialState = (0, _appState.currentState)();
 (0, _render.renderList)(foosElement)(get(initialState, 'foos'));
 (0, _render.renderList)(barsElement)(get(initialState, 'bars'));
 
+// RENDER ON NEXT STATE
 (0, _appState.listen)((0, _helpers.prop)('foos'), (0, _render.renderList)(foosElement));
 (0, _appState.listen)((0, _helpers.prop)('bars'), (0, _render.renderList)(barsElement));
 
@@ -588,6 +605,7 @@ window.currentState = _appState.currentState;
 window.update = _appState.update;
 window.addFoo = _command.addFoo;
 window.addBar = _command.addBar;
+window.undo = _appState.undo;
 
 },{"./appState":2,"./command":3,"./helpers":4,"./render":6,"mori":1}],6:[function(require,module,exports){
 'use strict';
