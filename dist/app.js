@@ -456,11 +456,13 @@ var history = vector(initialValue);
 
 var listeners = vector();
 
+// get current state
 var currentState = function currentState() {
   return peek(history);
 };
 
 exports.currentState = currentState;
+// listen to state updates
 var listen = function listen(listenTo, callback) {
   listeners = conj(listeners, hashMap('listenTo', listenTo, 'callback', callback));
 };
@@ -479,6 +481,7 @@ var callListener = function callListener(previousState, newState) {
   };
 };
 
+// updates state
 var update = function update(fn) {
   var previousState = peek(history);
 
@@ -506,23 +509,50 @@ var _mori = require('mori');
 
 var _mori2 = _interopRequireDefault(_mori);
 
-var conj = _mori2['default'].conj;
-var updateIn = _mori2['default'].updateIn;
-
-var conjItem = function conjItem(item) {
-  return function (coll) {
-    return conj(coll, item);
-  };
-};
+var _helpers = require('./helpers');
 
 var addFoo = function addFoo(foo) {
   return function (state) {
-    return updateIn(state, ['foos'], conjItem(foo));
+    return _mori2['default'].updateIn(state, ['foos'], (0, _helpers.conjItem)(foo));
   };
 };
-exports.addFoo = addFoo;
 
-},{"mori":1}],4:[function(require,module,exports){
+exports.addFoo = addFoo;
+var addBar = function addBar(bar) {
+  return function (state) {
+    return _mori2['default'].updateIn(state, ['bars'], (0, _helpers.conjItem)(bar));
+  };
+};
+exports.addBar = addBar;
+
+},{"./helpers":4,"mori":1}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _mori = require('mori');
+
+var _mori2 = _interopRequireDefault(_mori);
+
+var prop = function prop(key) {
+  return function (o) {
+    return _mori2['default'].get(o, key);
+  };
+};
+
+exports.prop = prop;
+var conjItem = function conjItem(item) {
+  return function (coll) {
+    return _mori2['default'].conj(coll, item);
+  };
+};
+exports.conjItem = conjItem;
+
+},{"mori":1}],5:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -531,35 +561,56 @@ var _mori = require('mori');
 
 var _mori2 = _interopRequireDefault(_mori);
 
+var _helpers = require('./helpers');
+
 var _command = require('./command');
 
 var _appState = require('./appState');
 
-var toJs = _mori2['default'].toJs;
+var _render = require('./render');
 
-console.log('INITIAL STATE', toJs((0, _appState.currentState)()));
+var get = _mori2['default'].get;
 
-(0, _appState.listen)(function (s) {
-  return s;
-}, function (s) {
-  return console.log('NEW STATE', toJs(s));
+// APPLICATION OUTPUTS
+var foosElement = document.getElementById('foos-list');
+var barsElement = document.getElementById('bars-list');
+
+// INITIAL STATE
+var initialState = (0, _appState.currentState)();
+(0, _render.renderList)(foosElement)(get(initialState, 'foos'));
+(0, _render.renderList)(barsElement)(get(initialState, 'bars'));
+
+(0, _appState.listen)((0, _helpers.prop)('foos'), (0, _render.renderList)(foosElement));
+(0, _appState.listen)((0, _helpers.prop)('bars'), (0, _render.renderList)(barsElement));
+
+window.mori = _mori2['default'];
+window.currentState = _appState.currentState;
+window.update = _appState.update;
+window.addFoo = _command.addFoo;
+window.addBar = _command.addBar;
+
+},{"./appState":2,"./command":3,"./helpers":4,"./render":6,"mori":1}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
 });
 
-(0, _appState.update)(function (x) {
-  return x;
-});
-(0, _appState.update)((0, _command.addFoo)('newFoo'));
-(0, _appState.update)(function (x) {
-  return x;
-});
-(0, _appState.update)(function (x) {
-  return x;
-});
-(0, _appState.update)((0, _command.addFoo)('newFoo2'));
-(0, _appState.update)((0, _command.addFoo)('newFoo2'));
-(0, _appState.update)(function (x) {
-  return x;
-});
-(0, _appState.update)((0, _command.addFoo)('newFoo'));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-},{"./appState":2,"./command":3,"mori":1}]},{},[4]);
+var _mori = require('mori');
+
+var _mori2 = _interopRequireDefault(_mori);
+
+var makeLi = function makeLi(acc, item) {
+  return acc + '<li>' + item + '</li>';
+};
+
+var renderList = function renderList(elem) {
+  return function (seq) {
+    return elem.innerHTML = _mori2['default'].reduce(makeLi, '<ul>', seq) + '</ul>';
+  };
+};
+exports.renderList = renderList;
+
+},{"mori":1}]},{},[5]);

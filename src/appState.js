@@ -8,8 +8,10 @@ let history = vector(initialValue);
 
 let listeners = vector();
 
+// get current state
 export const currentState = () => peek(history);
 
+// listen to state updates
 export const listen = (listenTo, callback) => {
   listeners = conj(listeners, hashMap(
     'listenTo', listenTo,
@@ -28,6 +30,7 @@ const callListener = (previousState, newState) => listener => {
   }
 };
 
+// updates state
 export const update = fn => {
   const previousState = peek(history);
 

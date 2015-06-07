@@ -1,19 +1,26 @@
 import Mori from 'mori';
 
-import {addFoo} from './command';
+import {prop} from './helpers';
+import {addFoo, addBar} from './command';
 import {currentState, update, listen} from './appState';
+import {renderList} from './render';
 
-let {toJs} = Mori;
+let {get} = Mori;
 
-console.log('INITIAL STATE', toJs(currentState()));
+// APPLICATION OUTPUTS
+let foosElement = document.getElementById('foos-list');
+let barsElement = document.getElementById('bars-list');
 
-listen(s => s, s => console.log('NEW STATE', toJs(s)));
+// INITIAL STATE
+const initialState = currentState();
+renderList(foosElement)(get(initialState, 'foos'));
+renderList(barsElement)(get(initialState, 'bars'));
 
-update(x => x);
-update(addFoo('newFoo'));
-update(x => x);
-update(x => x);
-update(addFoo('newFoo2'));
-update(addFoo('newFoo2'));
-update(x => x);
-update(addFoo('newFoo'));
+listen(prop('foos'), renderList(foosElement));
+listen(prop('bars'), renderList(barsElement));
+
+window.mori = Mori;
+window.currentState = currentState;
+window.update = update;
+window.addFoo = addFoo;
+window.addBar = addBar;

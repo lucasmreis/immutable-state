@@ -1,8 +1,9 @@
 import Mori from 'mori';
 
-let {conj, updateIn} = Mori;
-
-const conjItem = item => coll => conj(coll, item);
+import {conjItem} from './helpers';
 
 export const addFoo = foo => state =>
-  updateIn(state, ['foos'], conjItem(foo));
+  Mori.updateIn(state, ['foos'], conjItem(foo));
+
+export const addBar = bar => state =>
+  Mori.updateIn(state, ['bars'], conjItem(bar));
