@@ -26,6 +26,10 @@ listen(prop('bars'), renderList(barsElement));
 let undoElement = document.getElementById('undo');
 undoElement.onclick = undo;
 
+let newFooElement = document.getElementById('new-foo');
+let addFooElement = document.getElementById('add-foo');
+addFooElement.onclick = () => update(addFoo(newFooElement.value));
+
 window.mori = Mori;
 window.currentState = currentState;
 window.update = update;

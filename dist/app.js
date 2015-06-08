@@ -503,15 +503,9 @@ var update = function update(fn) {
 
 exports.update = update;
 var undo = function undo() {
-  console.log('UNDO', count(history));
   if (count(history) > 1) {
-    console.log('HISTORY BEFORE', toJs(history));
-
     var previousState = peek(history);
     history = subvec(history, 0, count(history) - 1);
-
-    console.log('HISTORY AFTER', toJs(history));
-
     var newState = peek(history);
     each(listeners, callListener(previousState, newState));
   }
@@ -611,6 +605,12 @@ var initialState = (0, _appState.currentState)();
 // APPLICATION INPUTS
 var undoElement = document.getElementById('undo');
 undoElement.onclick = _appState.undo;
+
+var newFooElement = document.getElementById('new-foo');
+var addFooElement = document.getElementById('add-foo');
+addFooElement.onclick = function () {
+  return (0, _appState.update)((0, _command.addFoo)(newFooElement.value));
+};
 
 window.mori = _mori2['default'];
 window.currentState = _appState.currentState;
