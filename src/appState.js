@@ -1,6 +1,6 @@
 import Mori from 'mori';
 
-let { equals, hashMap, set, vector, conj, peek, each, get, toJs, reverse, rest, comp, count } = Mori;
+let { equals, hashMap, set, vector, conj, peek, each, get, toJs, subvec, comp, count, into } = Mori;
 
 let initialValue = hashMap('foos', set([1, 2, 3]), 'bars', set(['a', 'b', 'c']));
 
@@ -35,7 +35,7 @@ export const update = fn => {
   const previousState = peek(history);
 
   // calculate new state
-  const newState = fn(peek(history));
+  const newState = fn(previousState);
 
   if (!equals(previousState, newState)) {
     // add new state to history
@@ -49,7 +49,7 @@ export const update = fn => {
 export const undo = () => {
   if (count(history) > 1) {
     const previousState = peek(history);
-    history = comp(reverse, rest, reverse)(history);
+    history = subvec(history, 0, count(history) - 1);
     const newState = peek(history);
     each(listeners, callListener(previousState, newState));
   }

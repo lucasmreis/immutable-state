@@ -449,10 +449,10 @@ var peek = _mori2['default'].peek;
 var each = _mori2['default'].each;
 var get = _mori2['default'].get;
 var toJs = _mori2['default'].toJs;
-var reverse = _mori2['default'].reverse;
-var rest = _mori2['default'].rest;
+var subvec = _mori2['default'].subvec;
 var comp = _mori2['default'].comp;
 var count = _mori2['default'].count;
+var into = _mori2['default'].into;
 
 var initialValue = hashMap('foos', set([1, 2, 3]), 'bars', set(['a', 'b', 'c']));
 
@@ -490,7 +490,7 @@ var update = function update(fn) {
   var previousState = peek(history);
 
   // calculate new state
-  var newState = fn(peek(history));
+  var newState = fn(previousState);
 
   if (!equals(previousState, newState)) {
     // add new state to history
@@ -503,9 +503,15 @@ var update = function update(fn) {
 
 exports.update = update;
 var undo = function undo() {
+  console.log('UNDO', count(history));
   if (count(history) > 1) {
+    console.log('HISTORY BEFORE', toJs(history));
+
     var previousState = peek(history);
-    history = comp(reverse, rest, reverse)(history);
+    history = subvec(history, 0, count(history) - 1);
+
+    console.log('HISTORY AFTER', toJs(history));
+
     var newState = peek(history);
     each(listeners, callListener(previousState, newState));
   }
@@ -587,6 +593,7 @@ var _render = require('./render');
 
 var get = _mori2['default'].get;
 
+// ----------------------------------------------------------------------
 // APPLICATION OUTPUTS
 var foosElement = document.getElementById('foos-list');
 var barsElement = document.getElementById('bars-list');
@@ -599,6 +606,11 @@ var initialState = (0, _appState.currentState)();
 // RENDER ON NEXT STATE
 (0, _appState.listen)((0, _helpers.prop)('foos'), (0, _render.renderList)(foosElement));
 (0, _appState.listen)((0, _helpers.prop)('bars'), (0, _render.renderList)(barsElement));
+
+// ----------------------------------------------------------------------
+// APPLICATION INPUTS
+var undoElement = document.getElementById('undo');
+undoElement.onclick = _appState.undo;
 
 window.mori = _mori2['default'];
 window.currentState = _appState.currentState;
