@@ -5,6 +5,7 @@ let { equals, hashMap, set, vector, conj, peek, each, get, toJs, subvec, comp, c
 let initialValue = hashMap('foos', set([1, 2, 3]), 'bars', set(['a', 'b', 'c']));
 
 let history = vector(initialValue);
+window.appHistory = history;
 
 let listeners = vector();
 

@@ -21,6 +21,7 @@
     "uglifyify": "^3.0.1"
   },
   "dependencies": {
-    "mori": "^0.3.2"
+    "mori": "^0.3.2",
+    "object-sizeof": "^1.0.6"
   }
 }
