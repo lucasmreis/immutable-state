@@ -4,7 +4,8 @@ import sizeof from 'object-sizeof';
 import {prop} from './helpers';
 import {addFoo, addBar} from './command';
 import {canAddBar} from './queries';
-import {currentState, update, listen, undo} from './appState';
+import {currentState, update, listen} from './appState';
+// import {currentState, update, listen, undo} from './appState';
 import {renderList, renderFoosAndDisableBars} from './render';
 
 let {get} = Mori;
@@ -43,9 +44,9 @@ listen(prop('foos'), renderFoosAndDisableBars(foosElement)([
   addSecondBarElement
 ]));
 
-window.mori = Mori;
-window.currentState = currentState;
-window.update = update;
-window.addFoo = addFoo;
-window.addBar = addBar;
-window.undo = undo;
+// window.mori = Mori;
+// window.currentState = currentState;
+// window.update = update;
+// window.addFoo = addFoo;
+// window.addBar = addBar;
+// window.undo = undo;

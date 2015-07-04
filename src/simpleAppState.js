@@ -2,14 +2,14 @@ import Mori from 'mori';
 
 let { equals, hashMap, set, vector, conj, peek, each, get, toJs, subvec, comp, count, into } = Mori;
 
-const initialValue = hashMap('foos', set([1, 2, 3]), 'bars', set(['a', 'b', 'c']));
+let initialValue = hashMap('foos', set([1, 2, 3]), 'bars', set(['a', 'b', 'c']));
 
-let history = vector(initialValue);
+let state = initialValue;
 
 let listeners = vector();
 
 // get current state
-export const currentState = () => peek(history);
+export const currentState = () => state;
 
 // listen to state updates
 export const listen = (listenTo, callback) => {
@@ -32,25 +32,15 @@ const callListener = (previousState, newState) => listener => {
 
 // updates state
 export const update = fn => {
-  const previousState = peek(history);
+  const previousState = state;
 
   // calculate new state
   const newState = fn(previousState);
 
   if (!equals(previousState, newState)) {
-    // add new state to history
-    history = conj(history, newState);
+    state = newState;
 
     // fire listener callbacks
     each(listeners, callListener(previousState, newState));
   }
 };
-
-export const undo = () => {
-  if (count(history) > 1) {
-    const previousState = peek(history);
-    history = subvec(history, 0, count(history) - 1);
-    const newState = peek(history);
-    each(listeners, callListener(previousState, newState));
-  }
-}
